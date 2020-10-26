@@ -43,12 +43,41 @@ function buscar(req, res) {
 function buscarPorID(req, res) {
 
     let idpersona = req.params.id
-    Persona.findById(idpersona,(err,persona)=>{
-        if(err) return res.status(500).send({message:'error al realizar la peticion'})
-        if(!persona) return res.status(404).send({message:'Error la persona no existe'})
+    
+}
 
-         res.status(200).send({persona})
+function eliminarPorID(req, res) {
+
+    let idpersona = req.params.id
+    Persona.deleteOne({ _id: idpersona },(err)=>{
+        if(err) return res.status(500).send({message:'error al realizar la peticion'})
+        res.status(204).send('')
      })
+}
+
+function editarPorID(req, res) {
+
+    let idpersona = req.params.id
+
+    let data = {}
+    data.nombre = req.body.nombre
+    data.apellido = req.body.apellido
+    data.edad = req.body.edad
+    data.rut = req.body.rut
+    data.phone = req.body.telefonos
+    data.sexo = req.body.sexo
+
+    Persona.updateOne({ _id: idpersona }, data, { omitUndefined: true }, (err,result)=>{
+        if(err) return res.status(500).send({message:'error al realizar la peticion'})
+        if(!result.n) return res.status(404).send({message:'Error la persona no existe'})
+
+        Persona.findById(idpersona,(err,persona)=>{
+            if(err) return res.status(500).send({message:'error al realizar la peticion'})
+            if(!persona) return res.status(404).send({message:'Error la persona no existe'})
+    
+             res.status(200).send(persona)
+         })
+    })
 }
 
 function todos(req, res) {
@@ -56,7 +85,7 @@ function todos(req, res) {
     Persona.find({},(err,persona)=>{
         if(err) return res.status(500).send({message:'error al realizar la peticion'})
         if(!persona) return res.status(404).send({message:'Error la persona no existe'})
-
+        
          res.status(200).send({persona})
      })
 }
@@ -66,6 +95,8 @@ function todos(req, res) {
 module.exports = {
     guardar,
     buscar,
-    buscarPorID,todos
-    
+    buscarPorID,
+    todos,
+    eliminarPorID,
+    editarPorID
 };

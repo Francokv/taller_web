@@ -12,6 +12,8 @@ var api = express.Router();
  
 //  Guardar Persona
 api.post('/personas', personaController.guardar);
+api.delete('/personas/:id', personaController.eliminarPorID);
+api.put('/personas/:id', personaController.editarPorID);
 api.get('/personas', personaController.todos);
 api.get('/personabyID/:id', personaController.buscarPorID);
 
